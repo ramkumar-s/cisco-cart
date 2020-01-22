@@ -1,0 +1,33 @@
+---
+version: "3.7"
+services:
+  cart-frontend:
+    build:
+      context: ./frontend
+    image: ram9107/cart-frontend:2.0
+    environment:
+      BACKENDLB: myapp-backend
+    ports:
+      - "9000:80"
+    volumes:
+      - type: volume
+        source: logvol
+        target: /var/log
+  logagent:
+    build:
+      context: ./awslogs
+    image: ram9107/logagent:2.0
+    volumes:
+      - type: volume
+        source: logvol
+        target: /mnt/log
+        read_only: yes
+  myapp-db:
+    image: mysql:5.7
+    volumes:
+      - type: volume
+        source: db-vol
+        target: /var/lib/mysql
+volumes:
+  logvol:
+  db-vol:
